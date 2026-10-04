@@ -1,28 +1,23 @@
 import type { Metadata } from "next";
-import { Archivo_Black, Work_Sans, Space_Mono } from "next/font/google";
+import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 
-const archivoBlack = Archivo_Black({
-  weight: "400",
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-archivo",
+  variable: "--font-outfit",
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-const workSans = Work_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-work",
-});
-
-const spaceMono = Space_Mono({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-inter",
+  weight: ["300", "400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "KASTING KOMPANY — BRUTALIST CREATIVE NETWORK FOR INDIAN CINEMA",
-  description: "Raw, unapologetic professional network for India's creative industry. Build your identity. Get cast.",
-  keywords: ["Casting India", "Malayalam Cinema", "Tamil Cinema", "Brutalist Casting", "Actors Network"],
+  title: "Kasting Kompany — Where Creative Careers Move",
+  description: "The professional network for India's creative industry. Where talent builds a living portfolio and casting professionals find the right people faster.",
+  keywords: ["Casting India", "Malayalam Cinema", "Tamil Cinema", "Telugu Cinema", "Bollywood", "Actors Network", "Casting Directors"],
 };
 
 export default function RootLayout({
@@ -31,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${archivoBlack.variable} ${workSans.variable} ${spaceMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-white text-black font-sans selection:bg-black selection:text-white">
+    <html lang="en" className={`${outfit.variable} ${inter.variable} dark h-full antialiased scroll-smooth`}>
+      <body className="min-h-full flex flex-col bg-[#08090C] text-[#F3F4F6] font-sans selection:bg-[#E05638] selection:text-white">
         {children}
       </body>
     </html>

@@ -1,160 +1,209 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 
-export const SolutionSection: React.FC = () => {
-  // Interactive Smart Casting Filter state for Pillar 3
-  const [selectedGender, setSelectedGender] = useState('MALE');
-  const [selectedAge, setSelectedAge] = useState('35–45');
-  const [selectedLanguage, setSelectedLanguage] = useState('MALAYALAM');
-  const [hasBeard, setHasBeard] = useState(true);
-  const [selectedCity, setSelectedCity] = useState('KOCHI');
+interface SolutionSectionProps {
+  onOpenWaitlist?: (role?: string) => void;
+}
+
+export const SolutionSection: React.FC<SolutionSectionProps> = ({ onOpenWaitlist }) => {
+  const customEase = [0.22, 1, 0.36, 1] as const;
 
   return (
-    <section id="solution" className="py-24 bg-white border-b-5 border-black relative">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section id="discovery" className="py-32 bg-black text-white relative">
+      <div className="mx-auto max-w-screen-2xl px-6 sm:px-12 space-y-40">
         
-        {/* Header */}
-        <div className="text-center max-w-4xl mx-auto space-y-4">
-          <span className="font-mono text-xs font-bold uppercase tracking-widest bg-black text-white px-3 py-1 border-2 border-black inline-block">
-            [SECTION 02 // THE PLATFORM SOLUTION]
-          </span>
-          <h2 className="font-headline text-3xl sm:text-5xl text-black uppercase leading-[1.05]">
-            ONE PROFESSIONAL NETWORK. <br />
-            <span className="bg-black text-white px-2">BUILT FOR THE WAY CASTING ACTUALLY WORKS.</span>
-          </h2>
-          <p className="font-body text-base sm:text-lg text-black leading-relaxed max-w-3xl mx-auto">
-            KASTING KOMPANY BRIDGES THE GAP BETWEEN TALENT AND INDUSTRY PROFESSIONALS WITH A STRUCTURED, VERIFIED IDENTITY NETWORK.
-          </p>
+        {/* PART 1: CREATIVE IDENTITY */}
+        <div id="talent" className="space-y-16">
+          <div className="max-w-5xl space-y-4">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, ease: customEase }}
+              className="font-display text-5xl sm:text-7xl lg:text-[7.5rem] font-black uppercase tracking-tighter leading-[0.9]"
+            >
+              YOUR PROFILE.
+              <br />
+              YOUR WORK.
+              <br />
+              <span className="text-[#E05638]">YOUR STORY.</span>
+            </motion.h2>
+          </div>
+
+          {/* Premium Fictional Talent Portfolio Experience (Editorial Feel) */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.2, ease: customEase }}
+            className="border-t-2 border-white pt-10"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+              
+              {/* Left: Giant Image / Identity */}
+              <div className="lg:col-span-5 relative aspect-[3/4] sm:aspect-square lg:aspect-[3/4] bg-[#111] overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
+                <Image 
+                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1287&auto=format&fit=crop"
+                  alt="Talent Profile"
+                  fill
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-8">
+                  <div>
+                    <h3 className="font-display text-4xl sm:text-5xl font-black uppercase tracking-tighter">VARUN NAIR</h3>
+                    <p className="font-sans text-sm font-bold uppercase tracking-widest text-[#E05638] mt-2">Actor / Creative Professional</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: Brutalist Spec Sheet */}
+              <div className="lg:col-span-7 flex flex-col justify-between">
+                <div className="grid grid-cols-2 gap-x-8 gap-y-12 font-sans text-sm">
+                  <div className="border-b border-white/20 pb-4">
+                    <span className="text-gray-500 uppercase font-bold tracking-widest block text-[10px] mb-2">Location</span>
+                    <span className="font-bold text-white text-lg uppercase tracking-tight">Kochi, Kerala</span>
+                  </div>
+                  <div className="border-b border-white/20 pb-4">
+                    <span className="text-gray-500 uppercase font-bold tracking-widest block text-[10px] mb-2">Playing Age</span>
+                    <span className="font-bold text-white text-lg uppercase tracking-tight">25–30 Years</span>
+                  </div>
+                  <div className="border-b border-white/20 pb-4">
+                    <span className="text-gray-500 uppercase font-bold tracking-widest block text-[10px] mb-2">Languages</span>
+                    <span className="font-bold text-white text-lg uppercase tracking-tight">Malayalam, English, Hindi</span>
+                  </div>
+                  <div className="border-b border-white/20 pb-4">
+                    <span className="text-gray-500 uppercase font-bold tracking-widest block text-[10px] mb-2">Specialized Skills</span>
+                    <span className="font-bold text-white text-lg uppercase tracking-tight">Theatre, Dance, Stunts</span>
+                  </div>
+                </div>
+
+                <div className="mt-12 space-y-6">
+                  <span className="font-sans text-[10px] text-gray-500 font-bold uppercase tracking-widest block">FEATURED CREDITS</span>
+                  <ul className="space-y-4 font-display text-xl sm:text-2xl font-black uppercase tracking-tighter">
+                    <li className="flex justify-between items-end border-b border-white/10 pb-4 hover:text-[#E05638] transition-colors">
+                      <span>&ldquo;Malabar Days&rdquo; (2025)</span>
+                      <span className="text-sm font-sans tracking-normal font-normal text-gray-400">Supporting Actor</span>
+                    </li>
+                    <li className="flex justify-between items-end border-b border-white/10 pb-4 hover:text-[#E05638] transition-colors">
+                      <span>&ldquo;Echoes of Kochi&rdquo; (2024)</span>
+                      <span className="text-sm font-sans tracking-normal font-normal text-gray-400">Lead Role</span>
+                    </li>
+                  </ul>
+                  <button
+                    onClick={() => onOpenWaitlist && onOpenWaitlist('Actor')}
+                    className="mt-8 text-sm font-bold uppercase tracking-widest text-[#E05638] hover:text-white transition-colors flex items-center gap-2"
+                  >
+                    View Full Portfolio &rarr;
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </motion.div>
         </div>
 
-        {/* 3 Pillars Grid */}
-        <div className="mt-16 grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* PILLAR 01: CREATIVE IDENTITY */}
-          <div className="card-raw-default flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b-3 border-black">
-                <span className="font-headline text-5xl text-black">01</span>
-                <span className="font-mono text-xs font-bold bg-black text-white px-2.5 py-1 uppercase">
-                  IDENTITY
-                </span>
-              </div>
-              <h3 className="font-headline text-2xl text-black uppercase">CREATIVE IDENTITY</h3>
-              <p className="font-body text-sm text-black leading-relaxed">
-                BUILD A PROFESSIONAL PROFILE THAT EVOLVES WITH YOUR CAREER. STRUCTURED METADATA INSTEAD OF UNFORMATTED TEXT.
-              </p>
-
-              {/* Feature Chips */}
-              <div className="flex flex-wrap gap-2 pt-2 font-mono text-[11px] font-bold">
-                {[
-                  "PROFILE & BIO", "PORTFOLIO", "VERIFIED SKILLS", "LANGUAGES", "CREDITS", 
-                  "ACTING REELS", "LOCATION", "PLAYING AGE", "LIVE AVAILABILITY"
-                ].map((tag, i) => (
-                  <span key={i} className="chip-filter">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="pt-4 border-t-3 border-black font-mono text-xs font-bold text-black uppercase">
-              ✓ STANDARDIZED PHYSICAL & SKILL ATTRIBUTES
-            </div>
+        {/* PART 2: LIVING PORTFOLIO */}
+        <div className="space-y-16">
+          <div className="max-w-5xl space-y-4">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, ease: customEase }}
+              className="font-display text-5xl sm:text-7xl lg:text-[7.5rem] font-black uppercase tracking-tighter leading-[0.9]"
+            >
+              YOUR PORTFOLIO IS <br />
+              <span className="text-[#E05638]">
+                ALWAYS MOVING.
+              </span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1, delay: 0.2, ease: customEase }}
+              className="font-sans text-lg sm:text-2xl text-gray-400 leading-snug max-w-3xl font-light mt-8"
+            >
+              Members create living portfolio posts — acting reels, behind-the-scenes moments, new project announcements, and availability updates. They become part of your professional identity.
+            </motion.p>
           </div>
 
-          {/* PILLAR 02: LIVING PORTFOLIO */}
-          <div className="card-raw-default flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b-3 border-black">
-                <span className="font-headline text-5xl text-black">02</span>
-                <span className="font-mono text-xs font-bold bg-black text-white px-2.5 py-1 uppercase">
-                  PORTFOLIO
+          {/* Brutalist Feed Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t-2 border-l-2 border-white">
+            
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.1, ease: customEase }}
+              className="border-b-2 border-r-2 border-white p-8 sm:p-10 space-y-8 flex flex-col justify-between hover:bg-[#111] transition-colors group"
+            >
+              <div className="space-y-6">
+                <span className="font-sans text-[10px] uppercase font-bold text-white tracking-widest border border-white px-3 py-1">
+                  ACTING REEL
                 </span>
+                <h4 className="font-display text-2xl font-black text-white uppercase tracking-tighter leading-none group-hover:text-[#E05638] transition-colors">
+                  New Monologue — Dramatic Scene (Malayalam)
+                </h4>
+                <p className="text-gray-400 font-sans text-sm">
+                  Emotional dramatic performance recorded for upcoming feature audition requirement.
+                </p>
               </div>
-              <h3 className="font-headline text-2xl text-black uppercase">LIVING PORTFOLIO</h3>
-              <p className="font-body text-sm text-black leading-relaxed">
-                YOUR PROFILE DOESN&apos;T HAVE TO STAY STATIC. PUBLISH POSTS THAT DEMONSTRATE YOUR ACTIVE CREATIVE JOURNEY.
-              </p>
-
-              {/* Sample Feed Items Box */}
-              <div className="space-y-3 pt-2 font-mono text-xs">
-                <div className="border-2 border-black p-3 bg-[#F0F0F0] space-y-1">
-                  <div className="flex justify-between font-bold text-black border-b border-black pb-1">
-                    <span>ACTING REEL</span>
-                    <span>YESTERDAY</span>
-                  </div>
-                  <p className="text-black uppercase font-semibold">EMOTIONAL SCENE MONOLOGUE PERFORMANCE</p>
-                </div>
-
-                <div className="border-2 border-black p-3 bg-[#F0F0F0] space-y-1">
-                  <div className="flex justify-between font-bold text-black border-b border-black pb-1">
-                    <span>BTS MOMENT</span>
-                    <span>3 DAYS AGO</span>
-                  </div>
-                  <p className="text-black uppercase font-semibold">BEHIND THE SCENES ON SET OF FEATURE FILM</p>
-                </div>
+              <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">
+                2 DAYS AGO
               </div>
-            </div>
+            </motion.div>
 
-            <div className="pt-4 border-t-3 border-black font-mono text-xs font-bold text-black uppercase">
-              ✓ POSTS BECOME LIVING PORTFOLIO ASSETS
-            </div>
-          </div>
-
-          {/* PILLAR 03: SMART CASTING DISCOVERY */}
-          <div className="card-raw-default flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b-3 border-black">
-                <span className="font-headline text-5xl text-black">03</span>
-                <span className="font-mono text-xs font-bold bg-black text-white px-2.5 py-1 uppercase">
-                  DISCOVERY
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2, ease: customEase }}
+              className="border-b-2 border-r-2 border-white p-8 sm:p-10 space-y-8 flex flex-col justify-between hover:bg-[#111] transition-colors group"
+            >
+              <div className="space-y-6">
+                <span className="font-sans text-[10px] uppercase font-bold text-white tracking-widest border border-white px-3 py-1">
+                  BTS & PROJECTS
                 </span>
+                <h4 className="font-display text-2xl font-black text-white uppercase tracking-tighter leading-none group-hover:text-[#E05638] transition-colors">
+                  Behind The Scenes — Shoot Wraps
+                </h4>
+                <p className="text-gray-400 font-sans text-sm">
+                  Wrapped 10 days of principal photography on location in Kozhikode.
+                </p>
               </div>
-              <h3 className="font-headline text-2xl text-black uppercase">SMART CASTING DISCOVERY</h3>
-              <p className="font-body text-sm text-black leading-relaxed">
-                FIND EXACTLY WHO YOU NEED USING INSTANT MULTI-ATTRIBUTE STRUCTURED FILTERS.
-              </p>
-
-              {/* Interactive Demo Filter Controls */}
-              <div className="border-3 border-black p-4 bg-[#F0F0F0] space-y-3 font-mono text-xs">
-                <div className="flex items-center justify-between font-bold text-black border-b-2 border-black pb-2">
-                  <span>FILTER CRITERIA</span>
-                  <span className="bg-black text-white px-2 py-0.5 text-[10px] uppercase">LIVE PREVIEW</span>
-                </div>
-
-                {/* Filter chip buttons */}
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  <button onClick={() => setSelectedGender(selectedGender === 'MALE' ? 'FEMALE' : 'MALE')} className="chip-filter active">
-                    {selectedGender}
-                  </button>
-                  <button onClick={() => setSelectedAge(selectedAge === '35–45' ? '25–30' : '35–45')} className="chip-filter active">
-                    AGE: {selectedAge}
-                  </button>
-                  <button onClick={() => setSelectedLanguage(selectedLanguage === 'MALAYALAM' ? 'TAMIL' : 'MALAYALAM')} className="chip-filter active">
-                    {selectedLanguage}
-                  </button>
-                  <button onClick={() => setHasBeard(!hasBeard)} className="chip-filter active">
-                    {hasBeard ? 'BEARD: YES' : 'BEARD: ANY'}
-                  </button>
-                  <button onClick={() => setSelectedCity(selectedCity === 'KOCHI' ? 'CHENNAI' : 'KOCHI')} className="chip-filter active">
-                    {selectedCity}
-                  </button>
-                </div>
-
-                {/* Match result box */}
-                <div className="pt-2 border-t-2 border-black flex items-center justify-between font-bold">
-                  <span className="text-black">MATCHING MEMBERS:</span>
-                  <span className="bg-black text-white px-2 py-1 text-sm font-headline">247 MATCHES</span>
-                </div>
+              <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">
+                5 DAYS AGO
               </div>
-            </div>
+            </motion.div>
 
-            <div className="pt-4 border-t-3 border-black font-mono text-xs font-bold text-black uppercase">
-              ✓ TARGETED CASTING ALERT SYSTEM
-            </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3, ease: customEase }}
+              className="border-b-2 border-r-2 border-white p-8 sm:p-10 space-y-8 flex flex-col justify-between hover:bg-[#111] transition-colors group"
+            >
+              <div className="space-y-6">
+                <span className="font-sans text-[10px] uppercase font-bold text-white tracking-widest border border-white px-3 py-1 bg-white text-black">
+                  AVAILABILITY
+                </span>
+                <h4 className="font-display text-2xl font-black text-white uppercase tracking-tighter leading-none group-hover:text-[#E05638] transition-colors">
+                  Available for Shoot Dates Next Month
+                </h4>
+                <p className="text-gray-400 font-sans text-sm">
+                  Open for feature film and commercial bookings across Kochi, Chennai, and Hyderabad.
+                </p>
+              </div>
+              <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">
+                TODAY
+              </div>
+            </motion.div>
+
           </div>
-
         </div>
 
       </div>

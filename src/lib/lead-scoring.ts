@@ -1,4 +1,4 @@
-import { UserRoleType, WaitlistFormData } from './types';
+import { WaitlistFormData } from './types';
 
 export interface LeadScoreBreakdown {
   score: number;

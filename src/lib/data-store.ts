@@ -1,27 +1,128 @@
-import { FullWaitlistUser, WaitlistFormData } from './types';
+import { FullWaitlistUser, WaitlistFormData, UserRoleType } from './types';
 import { calculateLeadScore } from './lead-scoring';
-import { DEMO_WAITLIST_USERS } from './demo-seed';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 const LOCAL_STORAGE_KEY = 'kasting_kompany_waitlist_v1';
 
-export function getWaitlistEntries(): FullWaitlistUser[] {
+export function getWaitlistEntriesLocal(): FullWaitlistUser[] {
   if (typeof window === 'undefined') {
-    return DEMO_WAITLIST_USERS;
+    return [];
   }
 
   const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
   if (!stored) {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(DEMO_WAITLIST_USERS));
-    return DEMO_WAITLIST_USERS;
+    return [];
   }
 
   try {
     const parsed = JSON.parse(stored);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEMO_WAITLIST_USERS;
+    return Array.isArray(parsed) ? parsed : [];
   } catch {
-    return DEMO_WAITLIST_USERS;
+    return [];
   }
+}
+
+export async function fetchWaitlistFromSupabase(): Promise<FullWaitlistUser[]> {
+  if (!isSupabaseConfigured() || !supabase) {
+    return getWaitlistEntriesLocal();
+  }
+
+  try {
+    const { data: usersData, error: usersErr } = await supabase
+      .from('users')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (usersErr || !usersData) {
+      console.warn('Error or empty users response from Supabase:', usersErr);
+      return getWaitlistEntriesLocal();
+    }
+
+    const { data: rolesData } = await supabase.from('user_roles').select('*');
+    const { data: artistData } = await supabase.from('artist_profiles').select('*');
+    const { data: profData } = await supabase.from('professional_profiles').select('*');
+    const { data: valData } = await supabase.from('validation_responses').select('*');
+    const { data: waitlistData } = await supabase.from('waitlist').select('*');
+    const { data: notesData } = await supabase.from('admin_notes').select('*');
+
+    const result: FullWaitlistUser[] = usersData.map(u => {
+      const userRoles = (rolesData || [])
+        .filter(r => r.user_id === u.id)
+        .map(r => r.role as UserRoleType);
+
+      const artistProf = (artistData || []).find(a => a.user_id === u.id);
+      const profProfile = (profData || []).find(p => p.user_id === u.id);
+      const valResponse = (valData || []).find(v => v.user_id === u.id);
+      const waitEntry = (waitlistData || []).find(w => w.user_id === u.id);
+      const userNotes = (notesData || [])
+        .filter(n => n.user_id === u.id)
+        .map(n => ({
+          id: n.id,
+          user_id: n.user_id,
+          note: n.note,
+          created_by: n.created_by,
+          created_at: n.created_at
+        }));
+
+      return {
+        user: {
+          id: u.id,
+          full_name: u.full_name,
+          email: u.email,
+          phone: u.phone,
+          whatsapp_available: Boolean(u.whatsapp_available),
+          state: u.state,
+          city: u.city,
+          native_language: u.native_language,
+          other_languages: u.other_languages || [],
+          years_in_industry: u.years_in_industry,
+          created_at: u.created_at || new Date().toISOString()
+        },
+        roles: userRoles.length > 0 ? userRoles : ['Creative Professional'],
+        artist_profile: artistProf ? {
+          ...artistProf,
+          skills: artistProf.skills || []
+        } : undefined,
+        professional_profile: profProfile ? {
+          ...profProfile,
+          current_sourcing_methods: profProfile.current_sourcing_methods || []
+        } : undefined,
+        validation_response: valResponse ? {
+          ...valResponse,
+          biggest_problems: valResponse.biggest_problems || []
+        } : undefined,
+        waitlist: waitEntry ? {
+          id: waitEntry.id,
+          user_id: waitEntry.user_id,
+          status: waitEntry.status || 'pending',
+          priority: waitEntry.priority || 'medium',
+          lead_score: waitEntry.lead_score || 0,
+          lead_tier: waitEntry.lead_tier || 'COLD',
+          early_access_requested: Boolean(waitEntry.early_access_requested),
+          created_at: waitEntry.created_at || u.created_at
+        } : {
+          id: 'wait_' + u.id,
+          user_id: u.id,
+          status: 'pending',
+          priority: 'medium',
+          lead_score: 0,
+          lead_tier: 'COLD',
+          early_access_requested: false,
+          created_at: u.created_at || new Date().toISOString()
+        },
+        notes: userNotes
+      };
+    });
+
+    return result;
+  } catch (err) {
+    console.error('Failed to query Supabase waitlist:', err);
+    return getWaitlistEntriesLocal();
+  }
+}
+
+export function getWaitlistEntries(): FullWaitlistUser[] {
+  return getWaitlistEntriesLocal();
 }
 
 export async function submitWaitlistForm(data: WaitlistFormData): Promise<{ success: boolean; id: string; error?: string }> {
@@ -103,7 +204,7 @@ export async function submitWaitlistForm(data: WaitlistFormData): Promise<{ succ
     }
   };
 
-  // 1. Try Supabase if configured
+  // 1. Try Supabase insertion if configured
   if (isSupabaseConfigured() && supabase) {
     try {
       // Insert user
@@ -146,15 +247,17 @@ export async function submitWaitlistForm(data: WaitlistFormData): Promise<{ succ
 
         // Insert waitlist
         await supabase.from('waitlist').insert(newUser.waitlist);
+      } else {
+        console.warn('Supabase user insert error:', userErr);
       }
     } catch (e) {
-      console.warn('Supabase insertion warning, falling back to client store:', e);
+      console.warn('Supabase insertion warning, falling back to local store:', e);
     }
   }
 
-  // 2. Local store update
+  // 2. Local store fallback update
   if (typeof window !== 'undefined') {
-    const current = getWaitlistEntries();
+    const current = getWaitlistEntriesLocal();
     const updated = [newUser, ...current];
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
   }
@@ -165,7 +268,7 @@ export async function submitWaitlistForm(data: WaitlistFormData): Promise<{ succ
 export function updateEarlyAccessRequest(userId: string): void {
   if (typeof window === 'undefined') return;
 
-  const entries = getWaitlistEntries();
+  const entries = getWaitlistEntriesLocal();
   const updated = entries.map(item => {
     if (item.user.id === userId) {
       return {
@@ -184,27 +287,38 @@ export function updateEarlyAccessRequest(userId: string): void {
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
 }
 
-export function addAdminNote(userId: string, noteText: string, createdBy: string = 'Superadmin'): void {
-  if (typeof window === 'undefined') return;
-
-  const entries = getWaitlistEntries();
-  const updated = entries.map(item => {
-    if (item.user.id === userId) {
-      const existingNotes = item.notes || [];
-      const newNote = {
-        id: 'note_' + Math.random().toString(36).substring(2, 9),
+export async function addAdminNote(userId: string, noteText: string, createdBy: string = 'Superadmin'): Promise<void> {
+  if (isSupabaseConfigured() && supabase) {
+    try {
+      await supabase.from('admin_notes').insert({
         user_id: userId,
         note: noteText,
-        created_by: createdBy,
-        created_at: new Date().toISOString()
-      };
-      return {
-        ...item,
-        notes: [newNote, ...existingNotes]
-      };
+        created_by: createdBy
+      });
+    } catch (e) {
+      console.warn('Could not insert admin note into Supabase:', e);
     }
-    return item;
-  });
+  }
 
-  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+  if (typeof window !== 'undefined') {
+    const entries = getWaitlistEntriesLocal();
+    const updated = entries.map(item => {
+      if (item.user.id === userId) {
+        const existingNotes = item.notes || [];
+        const newNote = {
+          id: 'note_' + Math.random().toString(36).substring(2, 9),
+          user_id: userId,
+          note: noteText,
+          created_by: createdBy,
+          created_at: new Date().toISOString()
+        };
+        return {
+          ...item,
+          notes: [newNote, ...existingNotes]
+        };
+      }
+      return item;
+    });
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+  }
 }

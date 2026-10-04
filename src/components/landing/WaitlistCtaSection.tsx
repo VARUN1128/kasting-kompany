@@ -1,52 +1,70 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 
 interface WaitlistCtaSectionProps {
   onOpenWaitlist: () => void;
 }
 
 export const WaitlistCtaSection: React.FC<WaitlistCtaSectionProps> = ({ onOpenWaitlist }) => {
+  const customEase = [0.22, 1, 0.36, 1] as const;
+
   return (
-    <section className="py-24 bg-white relative">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
+    <section className="py-40 bg-white text-black relative overflow-hidden">
+      
+      <div className="relative mx-auto max-w-screen-2xl px-6 sm:px-12 text-center space-y-16">
         
-        <div className="card-raw-elevated p-8 sm:p-14 space-y-8 bg-white">
-          
-          <div className="inline-block border-2 border-black bg-black text-white px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest">
-            [LIMITED EARLY ACCESS COMMUNITY]
-          </div>
+        <motion.h2
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: customEase }}
+          className="font-display text-5xl sm:text-7xl lg:text-[10rem] font-black uppercase tracking-tighter leading-[0.85]"
+        >
+          BE PART OF <br />
+          <span className="text-[#E05638]">WHAT&apos;S NEXT.</span>
+        </motion.h2>
 
-          <h2 className="font-headline text-3xl sm:text-5xl lg:text-6xl text-black uppercase leading-[1.0] tracking-tight">
-            BE PART OF THE FIRST NETWORK BUILT FOR <br className="hidden sm:inline" />
-            <span className="bg-black text-white px-2">INDIA&apos;S CREATIVE INDUSTRY.</span>
-          </h2>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.2, ease: customEase }}
+          className="font-sans text-lg sm:text-2xl text-gray-500 max-w-2xl mx-auto leading-snug font-bold uppercase tracking-widest"
+        >
+          We&apos;re starting with a limited early-access community.
+        </motion.p>
 
-          <p className="font-body text-base sm:text-lg text-black max-w-2xl mx-auto leading-relaxed">
-            WE&apos;RE STARTING WITH A LIMITED EARLY-ACCESS COMMUNITY OF TALENT AND INDUSTRY PROFESSIONALS IN MALAYALAM, TAMIL, TELUGU, HINDI, AND KANNADA CINEMA.
+        {/* CTA Button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.3, ease: customEase }}
+          className="pt-10 flex justify-center"
+        >
+          <button
+            onClick={onOpenWaitlist}
+            className="group bg-black px-12 py-6 text-sm font-bold uppercase tracking-widest text-white hover:bg-[#E05638] transition-all flex items-center gap-4"
+          >
+            <span>JOIN EARLY ACCESS</span>
+            <span className="group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
+          </button>
+        </motion.div>
+
+        {/* Brand Mantra Tagline */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.5, ease: customEase }}
+          className="pt-20 mt-20 border-t-[3px] border-black"
+        >
+          <p className="font-display text-2xl sm:text-4xl font-black uppercase tracking-tighter text-black max-w-3xl mx-auto">
+            Kasting Kompany — Where creative careers move.
           </p>
-
-          {/* Action Button */}
-          <div className="pt-4 flex justify-center">
-            <button
-              onClick={onOpenWaitlist}
-              className="btn-raw-primary text-base py-5 px-10"
-            >
-              JOIN EARLY ACCESS NOW &rarr;
-            </button>
-          </div>
-
-          {/* Trust Statement */}
-          <div className="pt-6 border-t-3 border-black flex flex-col sm:flex-row items-center justify-center gap-4 font-mono text-xs font-bold text-black uppercase">
-            <span className="bg-[#F0F0F0] border-2 border-black px-3 py-1">
-              [✓ STRICT DATA PRIVACY]
-            </span>
-            <span className="bg-[#F0F0F0] border-2 border-black px-3 py-1">
-              [✓ NO SPAM · NO UNNECESSARY CALLS]
-            </span>
-          </div>
-
-        </div>
+        </motion.div>
 
       </div>
     </section>
